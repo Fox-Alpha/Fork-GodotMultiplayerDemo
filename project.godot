@@ -11,6 +11,7 @@ config_version=5
 [application]
 
 config/name="MultiplayerDemo"
+config/tags=PackedStringArray("2d", "demo", "godot_4.4", "multiplayer")
 run/main_scene="res://UI/MainMenu/menu.tscn"
 config/features=PackedStringArray("4.4", "Forward Plus")
 boot_splash/fullsize=false
@@ -23,7 +24,7 @@ GameManager="*res://Singletons/game_manager.gd"
 
 [debug]
 
-gdscript/warnings/untyped_declaration=2
+gdscript/warnings/untyped_declaration=1
 
 [editor_plugins]
 
