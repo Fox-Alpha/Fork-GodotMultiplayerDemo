@@ -2,10 +2,10 @@ extends Node
 
 # The MultiplayerManager contains all of the networking related code, for both the server and the client
 
-const Player = preload("res://Game/Player/player.tscn")
-const LagCompensationPlayer = preload("res://Game/Player/lag_compensation_player.tscn")
-const Projectile = preload("res://Game/Projectile/projectile.tscn")
-const LagCompensationProjectile = preload("res://Game/Projectile/lag_compensation_projectile.tscn")
+const PLAYER = preload("res://Game/Player/player.tscn")
+const LAGCOMPENSATIONPLAYER = preload("res://Game/Player/lag_compensation_player.tscn")
+const PROJECTILE = preload("res://Game/Projectile/projectile.tscn")
+const LAGCOMPENSATIONPROJECTILE = preload("res://Game/Projectile/lag_compensation_projectile.tscn")
 const enums = preload("res://Game/enums.gd")
 const GameState = preload("res://Game/proto/game_state.gd")
 const PlayerInputProto = preload("res://Game/proto/player_input.gd")
@@ -92,7 +92,7 @@ func client_lobby_player_list_updated(player_names: Array) -> void:
 	
 @rpc("reliable")
 func setup_lobby_player() -> void:
-	player = Player.instantiate()
+	player = PLAYER.instantiate()
 	player.set_id(multiplayer.get_unique_id())
 	player.this_player = true
 	player.set_username(username)
@@ -157,7 +157,7 @@ func receive_game_state(game_state: PackedByteArray) -> void:
 			continue
 		
 		if p.get_id() not in other_players:
-			var new_player: = Player.instantiate()
+			var new_player: = PLAYER.instantiate()
 			new_player.set_id(p.get_id())
 			player_added.emit(new_player)
 		player_updated.emit(p)
@@ -198,7 +198,7 @@ func setup_server_lobby() -> void:
 func setup_host_lobby(_username: String) -> void:
 	setup_multiplayer_server()
 	username = _username
-	player = Player.instantiate()
+	player = PLAYER.instantiate()
 	player.set_id(1)
 	player.this_player = true
 	player.set_username(username)
@@ -207,7 +207,7 @@ func setup_host_lobby(_username: String) -> void:
 	update_lobby_player_list()
 	
 func _on_peer_connected_to_lobby(id: int) -> void:
-	var new_player := Player.instantiate()
+	var new_player := PLAYER.instantiate()
 	new_player.set_id(id)
 	player_dict[id] = new_player
 	await get_tree().create_timer(player_connection_wait).timeout
@@ -326,14 +326,14 @@ func hit_reported(projectile_id: int, victim_id: int, shooter_id: int, client_se
 	# that are only used to check this collision
 	if victim_id not in player_dict:
 		return
-	var lag_compensation_player := LagCompensationPlayer.instantiate()
+	var lag_compensation_player := LAGCOMPENSATIONPLAYER.instantiate()
 	lag_compensation_player.actual_player = player_dict[victim_id]
 	if client_server_tick not in lag_compensation_player.actual_player.previous_positions:
 		return
 	lag_compensation_player.position = lag_compensation_player.actual_player.previous_positions[client_server_tick]
 	if shooter_id not in projectile_dict or projectile_id not in projectile_dict[shooter_id]:
 		return
-	var lag_compensation_projectile := LagCompensationProjectile.instantiate()
+	var lag_compensation_projectile := LAGCOMPENSATIONPROJECTILE.instantiate()
 	lag_compensation_projectile.actual_projectile = projectile_dict[shooter_id][projectile_id]
 	lag_compensation_projectile.victim = lag_compensation_player
 	lag_compensation_projectile.damage = lag_compensation_projectile.actual_projectile.damage

@@ -4,7 +4,7 @@ extends Node2D
 
 class_name MainGame
 
-const Projectile = preload("res://Game/Projectile/projectile.tscn")
+const PROJECTILE = preload("res://Game/Projectile/projectile.tscn")
 const GameState = preload("res://Game/proto/game_state.gd")
 
 const ping_update_rate := 60
@@ -71,7 +71,7 @@ func remove_player(player_id: int) -> void:
 		other_players.erase(player_id)
 
 func add_projectile_proto(p: GameState.GameState.ProjectileProto) -> void:
-	var new_projectile := Projectile.instantiate()
+	var new_projectile := PROJECTILE.instantiate()
 	new_projectile.id = p.get_id()
 	new_projectile.owner_id = p.get_owner_id()
 	new_projectile.damage = p.get_damage()
