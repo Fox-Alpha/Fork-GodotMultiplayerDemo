@@ -187,7 +187,7 @@ class PBPacker:
 			else:
 				value = 0
 		for _i in range(9):
-			var b = value & 0x7F
+			var b : int = value & 0x7F
 			value >>= 7
 			if value:
 				varint.append(b | 0x80)
@@ -217,7 +217,7 @@ class PBPacker:
 
 	@warning_ignore("untyped_declaration")
 	static func unpack_bytes(bytes : PackedByteArray, index : int, count : int, data_type : int):
-		var value = 0
+		var value :int = 0
 		if data_type == PB_DATA_TYPE.FLOAT:
 			var spb : StreamPeerBuffer = StreamPeerBuffer.new()
 			for i in range(index, count + index):
@@ -295,9 +295,9 @@ class PBPacker:
 		var head : PackedByteArray = pack_type_tag(type, field.tag)
 		var data : PackedByteArray = PackedByteArray()
 		if type == PB_TYPE.VARINT:
-			var value
+			var value : int
 			if field.rule == PB_RULE.REPEATED:
-				for v in field.value:
+				for v : int in field.value:
 					data.append_array(head)
 					if field.type == PB_DATA_TYPE.SINT32 || field.type == PB_DATA_TYPE.SINT64:
 						value = convert_signed(v)
@@ -313,7 +313,7 @@ class PBPacker:
 				data = pack_varint(value)
 		elif type == PB_TYPE.FIX32:
 			if field.rule == PB_RULE.REPEATED:
-				for v in field.value:
+				for v : int in field.value:
 					data.append_array(head)
 					data.append_array(pack_bytes(v, 4, field.type))
 				return data
@@ -321,7 +321,7 @@ class PBPacker:
 				data.append_array(pack_bytes(field.value, 4, field.type))
 		elif type == PB_TYPE.FIX64:
 			if field.rule == PB_RULE.REPEATED:
-				for v in field.value:
+				for v : int in field.value:
 					data.append_array(head)
 					data.append_array(pack_bytes(v, 8, field.type))
 				return data
@@ -332,32 +332,32 @@ class PBPacker:
 				if type_copy == PB_TYPE.VARINT:
 					if field.type == PB_DATA_TYPE.SINT32 || field.type == PB_DATA_TYPE.SINT64:
 						var signed_value : int
-						for v in field.value:
+						for v : int in field.value:
 							signed_value = convert_signed(v)
 							data.append_array(pack_varint(signed_value))
 					else:
-						for v in field.value:
+						for v : int in field.value:
 							data.append_array(pack_varint(v))
 					return pack_length_delimeted(type, field.tag, data)
 				elif type_copy == PB_TYPE.FIX32:
-					for v in field.value:
+					for v : int in field.value:
 						data.append_array(pack_bytes(v, 4, field.type))
 					return pack_length_delimeted(type, field.tag, data)
 				elif type_copy == PB_TYPE.FIX64:
-					for v in field.value:
+					for v : int in field.value:
 						data.append_array(pack_bytes(v, 8, field.type))
 					return pack_length_delimeted(type, field.tag, data)
 				elif field.type == PB_DATA_TYPE.STRING:
-					for v in field.value:
-						var obj = v.to_utf8_buffer()
+					for v : String in field.value:
+						var obj := v.to_utf8_buffer()
 						data.append_array(pack_length_delimeted(type, field.tag, obj))
 					return data
 				elif field.type == PB_DATA_TYPE.BYTES:
-					for v in field.value:
+					for v : PackedByteArray in field.value:
 						data.append_array(pack_length_delimeted(type, field.tag, v))
 					return data
 				elif typeof(field.value[0]) == TYPE_OBJECT:
-					for v in field.value:
+					for v : Object in field.value:
 						var obj : PackedByteArray = v.to_bytes()
 						data.append_array(pack_length_delimeted(type, field.tag, obj))
 					return data
